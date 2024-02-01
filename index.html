@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Count App</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    button, input[type="submit"] {
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 5px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    #countLabel {
+      font-size: 24px;
+      margin-top: 20px;
+      background-color: #2196f3;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    #sumRow {
+      font-size: 24px;
+      margin-top: 10px;
+      background-color: #ff9800; /* Orange background */
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    form {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    label {
+      font-size: 18px;
+      margin-right: 5px;
+    }
+    input[type="number"] {
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    #dataTable {
+      margin-top: 20px;
+      width: 50%;
+      border-collapse: collapse;
+    }
+    #dataTable th, #dataTable td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    #dataTable th {
+      background-color: #4caf50;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <button id="incrementButton">Increment</button>
+  <button id="decrementButton">Decrement</button>
+  <button id="resetButton">Reset</button>
+  <button id="editButton">Edit</button>
+  <div id="countLabel">Count: 0</div>
+  <form id="addForm">
+    <label for="customCount">Input Number</label>
+    <input type="number" id="customCount" name="customCount" min="1" step="1" value="0">
+    <input type="submit" value="Add">
+  </form>
+  
+  <table id="dataTable">
+    <thead>
+      <tr>
+        <th>Index</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody id="dataBody"></tbody>
+  </table>
+  <div id="sumRow">Sum: 0</div>
+
+  <script>
+    let clickCount = 0;
+    const incrementButton = document.getElementById('incrementButton');
+    const decrementButton = document.getElementById('decrementButton');
+    const resetButton = document.getElementById('resetButton');
+    const editButton = document.getElementById('editButton');
+    const addForm = document.getElementById('addForm');
+    const customCountInput = document.getElementById('customCount');
+    const countLabel = document.getElementById('countLabel');
+    const sumRow = document.getElementById('sumRow');
+    const dataTableBody = document.getElementById('dataBody');
+
+    const data = [];
+
+    incrementButton.addEventListener('click', () => {
+      incrementCount();
+    });
+
+    decrementButton.addEventListener('click', () => {
+      decrementCount();
+    });
+
+    resetButton.addEventListener('click', () => {
+      resetCount();
+    });
+
+    editButton.addEventListener('click', () => {
+      editCount();
+    });
+
+    addForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      addCount();
+    });
+
+    function incrementCount() {
+      clickCount++;
+      updateCountLabel();
+    }
+
+    function decrementCount() {
+      clickCount--;
+      updateCountLabel();
+    }
+
+    function resetCount() {
+      clickCount = 0;
+      updateCountLabel();
+    }
+
+    function editCount() {
+      const newCount = prompt('Enter new count:');
+      if (!isNaN(newCount)) {
+        clickCount = parseInt(newCount);
+        updateCountLabel();
+      } else {
+        alert('Please enter a valid number.');
+      }
+    }
+
+    function addCount() {
+      const customValue = parseInt(customCountInput.value);
+      if (!isNaN(customValue) && customValue > 0) {
+        clickCount += customValue;
+        updateCountLabel();
+        addToDataTable(customValue);
+        customCountInput.value = '';
+      } else {
+        alert('Please enter a valid positive number.');
+      }
+    }
+
+    function addToDataTable(value) {
+      data.push(value);
+      renderDataTable();
+      updateSum();
+    }
+
+    function renderDataTable() {
+      dataTableBody.innerHTML = '';
+      data.forEach((value, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${index + 1}</td><td>${value}</td>`;
+        dataTableBody.appendChild(row);
+      });
+    }
+
+    function updateSum() {
+      const sum = data.reduce((acc, value) => acc + value, 0);
+      sumRow.textContent = `Sum: ${sum}`;
+    }
+
+    function updateCountLabel() {
+      countLabel.textContent = `Count: ${clickCount}`;
+    }
+  </script>
+</body>
+</html>
